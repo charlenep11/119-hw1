@@ -233,7 +233,7 @@ class LatencyHelper:
         # Save the result in the filename provided.
         plt.figure() #copied from above 
         plt.bar(self.names, self.latencies, color = "blue")
-        plt.ylabel("Latency (items/sec)")
+        plt.ylabel("Latency (ms)")
         plt.title("Pipeline Latency Comparison")
         plt.xticks()
         plt.savefig(filename)  
@@ -471,25 +471,25 @@ import pandas as pd
 def load_input_small():
     df = pd.read_csv("data/population-small.csv")
     # Remove rows with world/continental
-    df = df[~df["Code"].str.startswith("OWID_", na=False)]
+    df = df[~df["Code"].str.startswith("OWID_", na = False)]
     return df
 
 def load_input_medium():
     df = pd.read_csv("data/population-medium.csv")
     # Remove rows with world/continental
-    df = df[~df["Code"].str.startswith("OWID_", na=False)]
+    df = df[~df["Code"].str.startswith("OWID_", na = False)]
     return df
 
 def load_input_large():
     df = pd.read_csv("data/population.csv")
     # Remove rows with world/continental
-    df = df[~df["Code"].str.startswith("OWID_", na=False)]
+    df = df[~df["Code"].str.startswith("OWID_", na = False)]
     return df
 
 def load_input_single_row():
     df = pd.read_csv("data/population-single-row.csv")
     # Remove rows with world/continental
-    df = df[~df["Code"].str.startswith("OWID_", na=False)]
+    df = df[~df["Code"].str.startswith("OWID_", na = False)]
     return df
 
 def q7():
@@ -623,14 +623,14 @@ What does this experiment show?
 ===== ANSWER Q10 BELOW =====
 For the pipeline throughput comparison, the large pipelines seem to be consistently faster than the baseline pipelines. 
 The difference grows as the dataset increases. For small datasets, the difference is small, 
-around 0.1 items/sec from baseline to fromvar, medium is ~1.2 items/sec and ~6.2 items/sec for large. 
+around 0.1 x 10^6 items/sec from baseline to fromvar, medium is ~1.2 x 10^6 items/sec and ~6.2 x 10^6 items/sec for large. 
 
 For the pipeline latency comparison, the latency plot shows that the fromvar_latency pipeline is faster 
 than baseline_latency, with ~2.5 vs ~3.6 seconds.
 
 This difference is more major with throughput. 
 
-This experimetn shows that using pre loaded data in memory improves throughput and latency, with more significant 
+This experimetn shows that using pre-loaded data in memory improves throughput and latency, with more significant 
 effects for throughput on large datasets. 
 
 ===== END OF Q10 ANSWER =====
@@ -784,20 +784,21 @@ Comment on the results you got!
 14a. Which pipelines is faster in terms of throughput?
 
 ===== ANSWER Q14a BELOW =====
-
+The forloop pipeline is the fastest with 7x10^6 items/sec. 
 ===== END OF Q14a ANSWER =====
 
 14b. Which pipeline is faster in terms of latency?
 
 ===== ANSWER Q14b BELOW =====
-
+The for_loop latency is faster (~0.4ms)
 ===== END OF Q14b ANSWER =====
 
 14c. Do you notice any other interesting observations?
 What does this experiment show?
 
 ===== ANSWER Q14c BELOW =====
-
+The througputs and latencies for q13 showed similar results to q9's. This experiment shows that throughput increases consistently with larger scales of data, 
+while latency decreases.
 ===== END OF Q14c ANSWER =====
 """
 
@@ -810,7 +811,8 @@ Which factor that we tested (file vs. variable, vectorized vs. for loop)
 had the biggest impact on performance?
 
 ===== ANSWER Q15 BELOW =====
-
+Although the plots did not reveal an obvious change in pipeline throughputs from q9a and q13a, when I check the raw throughput calculations, 
+the pipelines from q9a (file vs variable) all have larger throughputs than those of q13a. 
 ===== END OF Q15 ANSWER =====
 
 16.
@@ -821,7 +823,9 @@ varies with the size of the input dataset.
 This is an open ended question.)
 
 ===== ANSWER Q16 BELOW =====
-
+Throughput for pipelines become increasingly efficient with larger scale data. The from-variable pipelines in q9
+achieved much higher throughput than the vectorized ones in q13. This suggests that removing file I/O has greater impacts on 
+performance than using vectorized operations, espeically with large data. 
 ===== END OF Q16 ANSWER =====
 
 17.
@@ -832,7 +836,7 @@ throughput is related to latency.
 This is an open ended question.)
 
 ===== ANSWER Q17 BELOW =====
-
+As throughput increases, latency decreases, so improving throughputs generally decreases latency. 
 ===== END OF Q17 ANSWER =====
 """
 

@@ -84,9 +84,9 @@ def load_input():
     """
 
     # Load the input files and return them as a list of 3 dataframes.
-    df_2019 = pd.read_csv('data/2019.csv', encoding='latin-1')
-    df_2020 = pd.read_csv('data/2020.csv', encoding='latin-1')
-    df_2021 = pd.read_csv('data/2021.csv', encoding='latin-1')
+    df_2019 = pd.read_csv('data/2019.csv', encoding = 'latin-1')
+    df_2020 = pd.read_csv('data/2020.csv', encoding = 'latin-1')
+    df_2021 = pd.read_csv('data/2021.csv', encoding = 'latin-1')
 
     # Standardizing the column names
     df_2019.columns = df_2019.columns.str.lower()
@@ -217,7 +217,8 @@ Did the checks pass or fail?
 Comment below and explain why.
 
 === ANSWER Q3b BELOW ===
-The function q3() checks whether the 3 lists (sorted by year) has the same university names. The test fails because there is a mismatch in the names, possibly because of capitilization, spelling or other whitespaces in the University names. 
+The function q3() checks whether the 3 lists (sorted by year) has the same university names. 
+The test fails because there is a mismatch in the names, possibly because of capitilization, spelling or other whitespaces in the University names. 
 === END OF Q3b ANSWER ===
 """
 
@@ -270,7 +271,7 @@ and 3 weaknesses of this dataset.
 === ANSWER Q4b BELOW ===
 Strengths:
 1. Good coverage. The data covers global universities. 
-2. Good metrics. The data has various columns which make it easier to analyze and make interpretations. 
+2. Good metrics. The data covers various columns which make it easier to analyze and make interpretations. 
 
 Weaknesses:
 1. When printing out the university names, some schools have the abbreviated names, and some don't. This makes it hard to make accurate comparisons. 

@@ -1,7 +1,7 @@
 q1,3
 q2,True
 q3a,False
-q4,['Sorbonne University', 'The London School of Economics and Political Science (LSE)', 'The Hong Kong Polytechnic University', 'Universitï¿½ PSL', 'Shanghai Jiao Tong University']
+q4,['New York University (NYU)', 'Universidad de Buenos Aires (UBA)', 'Yale University', 'Universitï¿½ PSL', 'University of North Carolina, Chapel Hill']
 q5a,[100, 100, 100, 100, 100, 100, 100, 100]
 q5b,[100, 100, 100, 100, 100, 100, 100, 100]
 q5c,100
