@@ -469,7 +469,7 @@ The input CSV file will have 600 rows, but the DataFrame (after your cleaning) m
 """
 import pandas as pd
 def load_input_small():
-    df = pd.read_csv("data/population-small.csv")
+    df = pd.read_csv("data/population-small.csv") 
     # Remove rows with world/continental
     df = df[~df["Code"].str.startswith("OWID_", na = False)]
     return df
@@ -604,7 +604,7 @@ def q9a():
 def q9b():
     h_latency = LatencyHelper()
     
-    # Add pipelines directly (no wrapper needed)
+    # Add pipelines
     h_latency.add_pipeline("baseline_latency", baseline_latency)
     h_latency.add_pipeline("fromvar_latency", fromvar_latency)
 
@@ -784,13 +784,13 @@ Comment on the results you got!
 14a. Which pipelines is faster in terms of throughput?
 
 ===== ANSWER Q14a BELOW =====
-The forloop pipeline is the fastest with 7x10^6 items/sec. 
+Surprisingly, the forloop pipeline is the fastest with 7x10^6 items/sec. 
 ===== END OF Q14a ANSWER =====
 
 14b. Which pipeline is faster in terms of latency?
 
 ===== ANSWER Q14b BELOW =====
-The for_loop latency is faster (~0.4ms)
+The for loop latency is faster (~0.4ms)
 ===== END OF Q14b ANSWER =====
 
 14c. Do you notice any other interesting observations?

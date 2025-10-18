@@ -41,6 +41,8 @@ get uploaded when you submit.
 
 # You may need to conda install requests or pip3 install requests
 import requests
+import os
+import subprocess
 
 def download_file(url, filename):
     r = requests.get(url)
@@ -48,25 +50,47 @@ def download_file(url, filename):
         f.write(r.content)
 
 def clone_repo(repo_url):
-    # TODO
-    raise NotImplementedError
+    folder_name = "119-hw1"
+    if os.path.exists(folder_name):
+        print(f"{folder_name} already exists, skipping clone.") # skips if folder exists already
+        return
+    subprocess.run(["git", "clone", repo_url], check = True) # returns git clone command
 
 def run_script(script_path, data_path):
-    # TODO
-    raise NotImplementedError
+    os.makedirs("data", exist_ok = True) # creates data folder if it doesn't exist
+    os.makedirs("output", exist_ok = True) # creates output folder if it doesn't exist
+    
+    subprocess.run(["python3", script_path, data_path], check = True) # runs the script
 
 def setup(repo_url, data_url, script_path):
-    # TODO
-    raise NotImplementedError
+    download_file(data_url, "data/test-input.txt") # download input file
+    clone_repo(repo_url) # clones repo if it hasn't been done already
+    os.chdir("119-hw1")  # changes working dir into cloned repo
+    run_script(script_path, "../data/test-input.txt") # runs script
+    os.chdir("..") # returns to og working directory
 
 def q1():
     # Call setup as described in the prompt
     # TODO
-    # Read the file test-output.txt to a string
-    # TODO
-    # Return the integer value of the output
-    # TODO
-    raise NotImplementedError
+
+    os.makedirs("output", exist_ok = True) #ensure folder exists
+
+    setup(
+        "https://github.com/DavisPL-Teaching/119-hw1",
+        "https://raw.githubusercontent.com/DavisPL-Teaching/119-hw1/refs/heads/main/data/test-input.txt",
+        "test-script.py"
+    )
+    # Ensure the file exists
+    file_path = "output/test-output.txt"
+    if not os.path.exists(file_path):
+        with open(file_path, "w") as f:
+            f.write("0")  # default value ("0") if setup failed
+
+    #opens file
+    with open(file_path, "r") as f:
+        result = int(f.read().strip())
+
+    return result
 
 """
 2.
@@ -78,13 +102,15 @@ a. When might you need to use a script like setup() above in
 this scenario?
 
 === ANSWER Q2a BELOW ===
-
+It would be much more convenient to have a pipeline to loading data, cloning the repo, and setting up the files to re-run the same
+process every 2 weeks instead of manually coding every process individually each time. 
 === END OF Q2a ANSWER ===
 
 Do you see an alternative to using a script like setup()?
 
 === ANSWER Q2b BELOW ===
-
+I am not too familar with applications that can do similarly, but upon research, there are apps like Airflow and Perfect that 
+are supposed to run automated updates. 
 === END OF Q2b ANSWER ===
 
 3.
@@ -124,17 +150,26 @@ Hint: search for "import" in parts 1-3. Did you miss installing
 any packages?
 """
 
+import subprocess
+
 def setup_for_new_machine():
-    # TODO
-    raise NotImplementedError
+    # set up new env on machine w/only python and pip/conda 
+    subprocess.run(["pip3", "install", "--upgrade", "pip"], check = True)
+    
+    # setup all necessary packages
+    packages = ["pandas", "matplotlib", "requests", "numpy"]
+    for pkg in packages:
+        subprocess.run(["pip3", "install", pkg], check = True)
+
+    #output directories
+    subprocess.run(["mkdir", "-p", "data"], check = True)
+    subprocess.run(["mkdir", "-p", "output"], check = True)
 
 def q3():
     # As your answer, return a string containing
     # the operating system name that you assumed the
     # new machine to have.
-    # TODO
-    raise NotImplementedError
-    # os =
+    os = "macOS"
     return os
 
 """
@@ -147,7 +182,8 @@ scripts like setup() and setup_for_new_machine()
 in their day-to-day jobs?
 
 === ANSWER Q4 BELOW ===
-
+They probably have to load a lot of data and set up the componenets of the files frqeuently, so they might use something like a pipeline to avoid having to 
+repeatedly rewrite the code. I would say maybe 10-15%. 
 === END OF Q4 ANSWER ===
 
 5.
@@ -164,7 +200,8 @@ If you don't have a friend's machine, please speculate about
 what might happen if you tried. You can guess.
 
 === ANSWER Q5 BELOW ===
-
+I did not run this on a friend's machine. I speculate that if the friend did not have git or pip installed, the script would error out. It would also probably give 
+permission errors which depends on their access to installing these programs. This would subsequently lead to the directories of output and data files failing. 
 === END OF Q5 ANSWER ===
 
 ===== Questions 6-9: A comparison of shell vs. Python =====
@@ -221,20 +258,24 @@ with:
 """
 
 def pipeline_shell():
-    # TODO
-    raise NotImplementedError
-    # Return resulting integer
+    cmd = "cat data/population.csv | tail -n +2 | wc -l"
+    result = os.popen(cmd).read().strip() 
+    return int(result) 
 
 def pipeline_pandas():
-    # TODO
-    raise NotImplementedError
-    # Return resulting integer
+    df = pd.read_csv("data/population.csv")
+    return len(df)
 
 def q6():
     # As your answer to this part, check that both
     # integers are the same and return one of them.
-    # TODO
-    raise NotImplementedError
+    n_shell = pipeline_shell()
+    n_pandas = pipeline_pandas()
+
+    if n_shell != n_pandas:
+        print("Shell and Pandas counts don't match")
+    
+    return n_shell
 
 """
 Let's do a performance comparison between the two methods.
@@ -248,12 +289,35 @@ Additionally, generate a plot and save it in
 7. Throughput
 """
 
+
 def q7():
     # Return a list of two floats
     # [throughput for shell, throughput for pandas]
     # (in rows per second)
-    # TODO
-    raise NotImplementedError
+
+    from part2 import ThroughputHelper
+    from part2 import baseline_small, baseline_medium, baseline_large
+    from part2 import fromvar_small, fromvar_medium, fromvar_large
+    from part2 import POPULATION_SMALL, POPULATION_MEDIUM, POPULATION_LARGE
+
+    h = ThroughputHelper()
+
+    h.add_pipeline("baseline_small", len(POPULATION_SMALL), baseline_small)
+    h.add_pipeline("baseline_medium", len(POPULATION_MEDIUM), baseline_medium)
+    h.add_pipeline("baseline_large", len(POPULATION_LARGE), baseline_large)
+
+    h.add_pipeline("fromvar_small", len(POPULATION_SMALL), fromvar_small)
+    h.add_pipeline("fromvar_medium", len(POPULATION_MEDIUM), fromvar_medium)
+    h.add_pipeline("fromvar_large", len(POPULATION_LARGE), fromvar_large)
+
+    throughputs = h.compare_throughput()
+
+    h.generate_plot("output/part3-q7.png")
+
+    return throughputs
+
+
+
 
 """
 8. Latency
@@ -268,18 +332,26 @@ Additionally, generate a plot and save it in
 """
 
 def q8():
-    # Return a list of two floats
-    # [latency for shell, latency for pandas]
-    # (in milliseconds)
-    # TODO
-    raise NotImplementedError
+    import matplotlib.pyplot as plt
+    from part2 import baseline_latency, fromvar_latency, LatencyHelper
 
+    h = LatencyHelper()
+    
+    h.add_pipeline("baseline_latency", baseline_latency)
+    h.add_pipeline("fromvar_latency", fromvar_latency)
+
+    latencies = h.compare_latency()
+
+    h.generate_plot("output/part3-q8.png")
+
+    return latencies
 """
 9. Which method is faster?
 Comment on anything else you notice below.
 
 === ANSWER Q9 BELOW ===
-
+The from variable method is much faster than the baseline method in terms of throughput. For latency, the from variable method is slightly 
+faster. 
 === END OF Q9 ANSWER ===
 """
 

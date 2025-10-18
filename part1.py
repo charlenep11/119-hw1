@@ -83,12 +83,12 @@ def load_input():
     Return: a list of 3 dataframes, one for each year.
     """
 
-    # Load the input files and return them as a list of 3 dataframes.
+    # Load input files
     df_2019 = pd.read_csv('data/2019.csv', encoding = 'latin-1')
     df_2020 = pd.read_csv('data/2020.csv', encoding = 'latin-1')
     df_2021 = pd.read_csv('data/2021.csv', encoding = 'latin-1')
 
-    # Standardizing the column names
+    # standardize col names
     df_2019.columns = df_2019.columns.str.lower()
     df_2020.columns = df_2019.columns.str.lower()
     df_2021.columns = df_2019.columns.str.lower()
@@ -97,7 +97,6 @@ def load_input():
     # Fill out this part. You can use column access to get only the
     # columns we are interested in using the NEW_COLUMNS variable above.
     # Make sure you return the columns in the new order.
-    # TODO
     df_2019 = df_2019[NEW_COLUMNS]
     df_2020 = df_2020[NEW_COLUMNS]
     df_2021 = df_2021[NEW_COLUMNS]
